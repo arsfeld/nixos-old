@@ -40,6 +40,7 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
+    samba 
     wget 
     vim 
     git 
@@ -66,6 +67,39 @@
       initialize = true;
     };
   };
+
+  services.samba = {
+    enable = true;
+    enableNmbd = true;
+    syncPasswordsByPam = true;
+    #package = pkgs.samba4;
+    extraConfig = ''
+      workgroup = WORKGROUP
+      server string = nixos
+      netbios name = nixos
+      security = user
+      guest account = nobody
+      map to guest = bad user
+      hosts allow = 192.168.1.0/24
+    '';
+
+    shares = {
+      Files = {
+        path = "/mnt/data/files";
+        browseable = "yes";
+      };
+
+      homes = {
+        "read only" = "no";
+        browseable = "no";
+      };
+    };
+
+    #Camera = {
+    #  path = "/mnt/data/camera";
+    #  
+    #}
+  };
   fileSystems = 
     let 
       makeNfsShare = name:
@@ -79,8 +113,16 @@
       map makeNfsShare [ "/mnt/data/files" "/mnt/data/media" "/mnt/data/homes" "/mnt/external" ];
 
   # Open ports in the firewall.
-  networking.firewall.allowedTCPPorts = [ 22 ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
+  networking.firewall.enable = false;
+  networking.firewall.allowPing = true;
+  networking.firewall.allowedTCPPorts = [ 
+    22 #ssh 
+    445 # samba
+  ];
+  networking.firewall.allowedTCPPortRanges = [
+    { from = 137;  to = 139; }   # Samba
+  ];
+  networking.firewall.allowedUDPPorts = [ 137 138 ];
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
 
