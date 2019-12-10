@@ -160,10 +160,20 @@
   # services.xserver.desktopManager.plasma5.enable = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.arosenfeld = {
-    isNormalUser = true;
-    extraGroups = [ "wheel" "docker" ]; # Enable ‘sudo’ for the user.
+  users.users = {
+    arosenfeld = {
+      isNormalUser = true;
+      extraGroups = [ "wheel" "docker" "media" ]; # Enable ‘sudo’ for the user.
+    };
+
+    media = {
+      uid = 8675309;
+      isNormalUser = false;
+      group = "media";
+    };
   };
+
+  users.groups.media.gid = 8675309;
 
   # This value determines the NixOS release with which your system is to be
   # compatible, in order to avoid breaking some software such as database
