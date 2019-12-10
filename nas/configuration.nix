@@ -81,8 +81,12 @@
       guest account = nobody
       map to guest = bad user
       hosts allow = 192.168.1.0/24
-      unix extensions = yes
+      ; unix extensions = yes
       map archive = no
+      ; Maybe this should be done per share. Taken from:
+      ; https://wiki.samba.org/index.php/Setting_up_a_Share_Using_Windows_ACLs
+      vfs objects = acl_xattr
+      map acl inherit = yes
     '';
 
     shares = {
