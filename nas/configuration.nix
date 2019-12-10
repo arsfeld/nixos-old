@@ -81,6 +81,8 @@
       guest account = nobody
       map to guest = bad user
       hosts allow = 192.168.1.0/24
+      unix extensions = yes
+      map archive = no
     '';
 
     shares = {
@@ -91,7 +93,7 @@
 
       homes = {
         "read only" = "no";
-        browseable = "no";
+        "browseable" = "no";
       };
     };
 
