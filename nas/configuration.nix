@@ -40,7 +40,10 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    wget vim git
+    wget 
+    vim 
+    git 
+    restic
   ];
 
   virtualisation.docker.enable = true;
@@ -55,6 +58,14 @@
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
 
+  services.restic.backups = {
+    localbackup = {
+      paths = [ "/mnt/data/homes" ];
+      repository = "/mnt/external/restic";
+      passwordFile = "/etc/nixos/secrets/restic-password";
+      initialize = true;
+    };
+  };
   fileSystems = 
     let 
       makeNfsShare = name:
@@ -65,7 +76,7 @@
           options = [ "rw" "local_lock=all" ];
         };
     in
-      map makeNfsShare [ "/mnt/data/files" "/mnt/data/media" "/mnt/data/homes" ];
+      map makeNfsShare [ "/mnt/data/files" "/mnt/data/media" "/mnt/data/homes" "/mnt/external" ];
 
   # Open ports in the firewall.
   networking.firewall.allowedTCPPorts = [ 22 ];
