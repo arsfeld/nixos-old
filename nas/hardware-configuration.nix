@@ -6,10 +6,12 @@
 {
   imports = [ ];
 
+  boot.kernelPackages = pkgs.linuxPackages_latest;
   boot.initrd.availableKernelModules = [ "ahci" "xhci_pci" "sd_mod" "sr_mod" ];
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ ];
   boot.extraModulePackages = [ ];
+  boot.kernelParams = [ "zswap.enabled=1" "zswap.compressor=zstd" "zswap.zpool=z3fold" ];
 
   fileSystems."/" =
     { device = "/dev/disk/by-uuid/145f8427-3ac9-47c0-b6e6-968766438efc";
@@ -22,8 +24,16 @@
     };
 
   swapDevices =
-    [ { device = "/dev/disk/by-uuid/c418395e-11f0-4b31-8da9-cfbfaaec6fd1"; }
+    [ 
+      { device = "/dev/disk/by-uuid/c418395e-11f0-4b31-8da9-cfbfaaec6fd1"; }
+      { device = "/var/swapfile"; size = 1024; }
     ];
+
+  zramSwap = {
+    enable = true;
+    memoryPercent = 25;
+    algorithm = "zstd";
+  };
 
   nix.maxJobs = lib.mkDefault 4;
 }
