@@ -100,6 +100,19 @@
     #  
     #}
   };
+
+  services.netdata = {
+    enable = true;
+
+    config = {
+      global = {
+        "debug log" = "syslog";
+        "access log" = "syslog";
+        "error log" = "syslog";
+      };
+    };
+  };
+
   fileSystems = 
     let 
       makeNfsShare = name:
@@ -117,6 +130,7 @@
   networking.firewall.allowPing = true;
   networking.firewall.allowedTCPPorts = [ 
     22 #ssh 
+    19999 #netdata 
     445 # samba
   ];
   networking.firewall.allowedTCPPortRanges = [
