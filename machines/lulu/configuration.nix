@@ -4,9 +4,9 @@
 
 { config, pkgs, ... }:
 
-
 let
   hardware = import <nixos-hardware> {};
+  unstable = import <nixos-unstable> {};
 in {
   imports = 
     [ # Include the results of the hardware scan. 
@@ -16,7 +16,54 @@ in {
       ./hardware-configuration.nix
     ];
 
-  boot.kernelParams = [ "i915.fastboot=1" ];
+  nixpkgs.config = {
+    # Allow proprietary packages
+    allowUnfree = true;
+  
+    # Create an alias for the unstable channel
+    packageOverrides = pkgs: {
+      # unstable = import <nixos-unstable> {
+      #   # pass the nixpkgs config to the unstable alias
+      #   # to ensure `allowUnfree = true;` is propagated:
+      #   config = config.nixpkgs.config;
+      # };
+
+      #vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
+    };  
+  };
+
+  # environment.variables = {
+  #   MESA_LOADER_DRIVER_OVERRIDE = "iris";
+  # };
+  
+  # hardware.opengl = {
+  #   enable = true;
+  #   extraPackages = with pkgs; [
+  #     vaapiIntel
+  #     vaapiVdpau
+  #     libvdpau-va-gl
+  #     intel-media-driver # only available starting nixos-19.03 or the current nixos-unstable
+  #   ];
+  #   package = (pkgs.mesa.override {
+  #     galliumDrivers = [ "nouveau" "virgl" "swrast" "iris" ];
+  #   }).drivers;
+  # };
+
+  services.udev.extraRules = ''
+    # set deadline scheduler for non-rotating disks
+    # according to https://wiki.debian.org/SSDOptimization, deadline is preferred over noop
+    ACTION=="add|change", KERNEL=="sd[a-z]", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="bfq"
+    # https://support.google.com/titansecuritykey/answer/9148044?hl=en
+    ACTION=="add|change", KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="18d1", ATTRS{idProduct}=="5026", TAG+="uaccess"
+  '';
+
+  security.pam.u2f = {
+    enable = true;
+    control = "sufficient";
+    cue = true;
+  }; 
+
+  #boot.kernelParams = [ "i915.fastboot=1" ];
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   boot.supportedFilesystems = [ "f2fs" ];
@@ -59,7 +106,7 @@ in {
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    wget vim gnupg
+    wget vim gnupg git usbutils
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -90,6 +137,7 @@ in {
   # Enable sound.
   sound.enable = true;
   hardware.pulseaudio.enable = true;
+  hardware.u2f.enable = true;
 
   # Enable the X11 windowing system.
   services.xserver.enable = true;
@@ -97,8 +145,9 @@ in {
   # services.xserver.xkbOptions = "eurosign:e";
 
   services.xserver.displayManager.gdm.enable = true;
-  services.xserver.displayManager.gdm.wayland = false;
+  services.xserver.displayManager.gdm.wayland = true;
   services.xserver.desktopManager.gnome3.enable = true;
+  services.gnome3.core-os-services.enable = true;
 
   # Enable touchpad support.
   # services.xserver.libinput.enable = true;
