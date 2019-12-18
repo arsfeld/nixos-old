@@ -17,15 +17,21 @@
     unstable.jetbrains.pycharm-community
     sublime3
     sublime-merge
+    pam_u2f
 
     zsh-prezto    
     ncdu # Disk space usage analyzer
     ripgrep # rg, fast grepper
-    unstable.vscode
     rtv
-    unstable.zoom-us
-    unstable.slack
     youtube-dl
+    gnome3.gnome-tweaks
+
+    unstable.vscode
+    #unstable.zoom-us
+    unstable.slack
+    
+    google-chrome
+    firefox
   ];
   
   programs = {
