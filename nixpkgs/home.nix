@@ -19,19 +19,28 @@
     sublime-merge
     pam_u2f
 
+    gnomeExtensions.dash-to-dock
+    gnomeExtensions.topicons-plus
+
     zsh-prezto    
     ncdu # Disk space usage analyzer
     ripgrep # rg, fast grepper
     rtv
     youtube-dl
     gnome3.gnome-tweaks
+    gnome3.meld
+    gnome3.dconf-editor
 
     unstable.vscode
     #unstable.zoom-us
     unstable.slack
     
-    google-chrome
+    #google-chrome
+    chromium
+    #chromium-codecs-ffmpeg
     firefox
+    byobu
+    tmux
   ];
   
   programs = {
