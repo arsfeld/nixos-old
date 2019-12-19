@@ -22,32 +22,13 @@ in {
   
     # Create an alias for the unstable channel
     packageOverrides = pkgs: {
-      # unstable = import <nixos-unstable> {
-      #   # pass the nixpkgs config to the unstable alias
-      #   # to ensure `allowUnfree = true;` is propagated:
-      #   config = config.nixpkgs.config;
-      # };
-
-      #vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
+      unstable = import <nixos-unstable> {
+        # pass the nixpkgs config to the unstable alias
+        # to ensure `allowUnfree = true;` is propagated:
+        config = config.nixpkgs.config;
+      };
     };  
   };
-
-  # environment.variables = {
-  #   MESA_LOADER_DRIVER_OVERRIDE = "iris";
-  # };
-  
-  # hardware.opengl = {
-  #   enable = true;
-  #   extraPackages = with pkgs; [
-  #     vaapiIntel
-  #     vaapiVdpau
-  #     libvdpau-va-gl
-  #     intel-media-driver # only available starting nixos-19.03 or the current nixos-unstable
-  #   ];
-  #   package = (pkgs.mesa.override {
-  #     galliumDrivers = [ "nouveau" "virgl" "swrast" "iris" ];
-  #   }).drivers;
-  # };
 
   services.udev.extraRules = ''
     # set deadline scheduler for non-rotating disks
@@ -62,12 +43,15 @@ in {
     control = "sufficient";
     cue = true;
   }; 
+  hardware.u2f.enable = true;
 
-  #boot.kernelParams = [ "i915.fastboot=1" ];
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  # let's have a bootsplash!
+  boot.plymouth.enable = true;
+
+  boot.kernelParams = [ "i915.fastboot=1" ];
+  #boot.kernelPackages = pkgs.linuxPackages;
 
   boot.supportedFilesystems = [ "f2fs" ];
-  # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
@@ -81,24 +65,8 @@ in {
   };
 
   networking.hostName = "nixos"; # Define your hostname.
-  #networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
-  # The global useDHCP flag is deprecated, therefore explicitly set to false here.
-  # Per-interface useDHCP will be mandatory in the future, so this generated config
-  # replicates the default behaviour.
   networking.useDHCP = false;
-  #networking.interfaces.wlp1s0.useDHCP = true;
-
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
-
-  # Select internationalisation properties.
-  # i18n = {
-  #   consoleFont = "Lat2-Terminus16";
-  #   consoleKeyMap = "us";
-  #   defaultLocale = "en_US.UTF-8";
-  # };
 
   # Set your time zone.
   time.timeZone = "America/Toronto";
@@ -116,6 +84,7 @@ in {
 
   # List services that you want to enable:
   services.flatpak.enable = true;
+  xdg.portal.enable = true;
   services.fwupd.enable = true;
 
   virtualisation.lxd.enable = true;
@@ -137,24 +106,39 @@ in {
   # Enable sound.
   sound.enable = true;
   hardware.pulseaudio.enable = true;
-  hardware.u2f.enable = true;
 
-  # Enable the X11 windowing system.
-  services.xserver.enable = true;
-  # services.xserver.layout = "us";
-  # services.xserver.xkbOptions = "eurosign:e";
+  services.xserver = {
+    enable = true;
 
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.displayManager.gdm.wayland = true;
-  services.xserver.desktopManager.gnome3.enable = true;
-  services.gnome3.core-os-services.enable = true;
+    # Chromebook touchpad
+    cmt = {
+      enable = false;
+      models = "lulu";
+    };
+    libinput.enable = true;
 
-  # Enable touchpad support.
-  # services.xserver.libinput.enable = true;
+    displayManager = {
+      gdm = {
+        enable = false;
+        wayland = false;
+      };
+      lightdm = {
+        enable = true;
+        #greeters.enso.enable = true;
+      };
+    };
 
-  # Enable the KDE Desktop Environment.
-  # services.xserver.displayManager.sddm.enable = true;
-  # services.xserver.desktopManager.plasma5.enable = true;
+    desktopManager = {
+      #default = "gnome3";
+      xterm.enable = false;
+      #xfce4-14.enable = true;
+      pantheon.enable = true;
+      gnome3 = {
+        enable = false;
+        #flashback.enableMetacity = true;
+      };
+    };
+  };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.arosenfeld = {
