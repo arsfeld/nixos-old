@@ -124,7 +124,8 @@ in {
       };
       lightdm = {
         enable = true;
-        #greeters.enso.enable = true;
+        greeters.gtk.enable = false;
+        greeters.enso.enable = true;
       };
     };
 
