@@ -27,9 +27,11 @@
     ripgrep # rg, fast grepper
     rtv
     youtube-dl
+    bind
     gnome3.gnome-tweaks
     gnome3.meld
     gnome3.dconf-editor
+    gnome3.gnome-disk-utility
 
     unstable.vscode
     #unstable.zoom-us
@@ -41,6 +43,7 @@
     firefox
     byobu
     tmux
+    screen
   ];
   
   programs = {
