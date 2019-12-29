@@ -30,6 +30,11 @@ in {
     };  
   };
 
+  #fileSystems."/mnt/files" = {
+  #  device = "192.168.1.10:/mnt/data/files";
+  #  fsType = "nfs";
+  #};
+
   services.udev.extraRules = ''
     # set deadline scheduler for non-rotating disks
     # according to https://wiki.debian.org/SSDOptimization, deadline is preferred over noop
@@ -46,14 +51,20 @@ in {
   hardware.u2f.enable = true;
 
   # let's have a bootsplash!
-  boot.plymouth.enable = true;
+  #boot.plymouth.enable = true;
 
   boot.kernelParams = [ "i915.fastboot=1" ];
   #boot.kernelPackages = pkgs.linuxPackages;
 
-  boot.supportedFilesystems = [ "f2fs" ];
+  boot.supportedFilesystems = [ "zfs" ];
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+  boot.zfs.requestEncryptionCredentials = true;
+
+  services.zfs = {
+    autoSnapshot.enable = true;
+    autoScrub.enable = true;
+  };
 
   nix.autoOptimiseStore = true;
 
@@ -65,7 +76,7 @@ in {
   };
 
   networking.hostName = "nixos"; # Define your hostname.
-
+  networking.hostId = "b8569be4";
   networking.useDHCP = false;
 
   # Set your time zone.
@@ -109,6 +120,8 @@ in {
 
   services.xserver = {
     enable = true;
+
+    xkbModel = "chromebook";
 
     # Chromebook touchpad
     cmt = {
