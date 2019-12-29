@@ -32,6 +32,7 @@
     gnome3.meld
     gnome3.dconf-editor
     gnome3.gnome-disk-utility
+    gnome3.gnome-software
 
     unstable.vscode
     #unstable.zoom-us
@@ -44,6 +45,7 @@
     byobu
     tmux
     screen
+    zstd
   ];
   
   programs = {
