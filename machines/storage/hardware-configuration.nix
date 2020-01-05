@@ -23,6 +23,13 @@
       fsType = "zfs";
     };
 
+
+  fileSystems."/var/nas" =
+    { device = "rpool/nas";
+      fsType = "zfs";
+    };
+
+
   fileSystems."/boot" =
     { device = "/dev/disk/by-uuid/BE45-E59F";
       fsType = "vfat";

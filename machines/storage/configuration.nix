@@ -8,9 +8,12 @@
       ./hardware-configuration.nix
       ./zfs.nix
       ./apps.nix
-      ./sharing.nix
+      ./samba.nix
       ./users.nix
     ];
+
+
+  zramSwap.algorithm = "lz4";
 
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;

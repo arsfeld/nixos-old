@@ -11,6 +11,11 @@ with lib;
   
   services.netdata.enable = true;
 
+  services.avahi.enable = true;
+  services.avahi.publish.enable = true;
+  services.avahi.publish.userServices = true;
+  services.avahi.publish.workstation = true;
+
   services.plex = {
     enable = true;
     openFirewall = true;
@@ -18,5 +23,25 @@ with lib;
     group = "media";
   };
 
-
+  systemd.services.nas = {
+    description = "Docker based NAS applications";
+    enable = false;
+    #wantedBy = [ "multi-user.target" ];
+    after = [ "docker.service" "docker.socket" ];
+    requires = [ "docker.service" "docker.socket" ];
+    script = "${pkgs.docker-compose} up";
+    #preStop = "${pkgs.docker}/bin/docker stop prometheus";
+    #reload = "${pkgs.docker}/bin/docker restart prometheus";
+    serviceConfig = {
+      ExecStartPre = [
+      	"${pkgs.docker-compose}/bin/docker down -v"
+        "${pkgs.docker-compose}/bin/docker rm -fv"
+      ];
+      ExecStop = "${pkgs.docker-compose}/bin/docker down -v";
+      TimeoutStartSec = 0;
+      TimeoutStopSec = 120;
+      Restart = "always";
+      WorkingDirectory = "/etc/nas";
+    };
+  };
 }
