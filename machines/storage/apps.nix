@@ -25,19 +25,18 @@ with lib;
 
   systemd.services.nas = {
     description = "Docker based NAS applications";
-    enable = false;
-    #wantedBy = [ "multi-user.target" ];
+    wantedBy = [ "multi-user.target" ];
     after = [ "docker.service" "docker.socket" ];
     requires = [ "docker.service" "docker.socket" ];
-    script = "${pkgs.docker-compose} up";
+    script = "${pkgs.docker-compose}/bin/docker-compose up";
     #preStop = "${pkgs.docker}/bin/docker stop prometheus";
     #reload = "${pkgs.docker}/bin/docker restart prometheus";
     serviceConfig = {
       ExecStartPre = [
-      	"${pkgs.docker-compose}/bin/docker down -v"
-        "${pkgs.docker-compose}/bin/docker rm -fv"
+      	"-${pkgs.docker-compose}/bin/docker-compose down -v"
+        "-${pkgs.docker-compose}/bin/docker-compose rm -fv"
       ];
-      ExecStop = "${pkgs.docker-compose}/bin/docker down -v";
+      ExecStop = "${pkgs.docker-compose}/bin/docker-compose down -v";
       TimeoutStartSec = 0;
       TimeoutStopSec = 120;
       Restart = "always";

@@ -8,10 +8,12 @@ with lib;
 
   boot.zfs = {
     forceImportAll = false;
+    extraPools = [ "data" ];
   };
 
   #services.zfs.autoSnapshot.enable = true;
   services.zfs.autoScrub.enable = true;
   #services.zfs.trim.enabled = true;
+
 
 }

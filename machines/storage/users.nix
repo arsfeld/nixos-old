@@ -7,12 +7,15 @@ with lib;
   users.users = {
     arosenfeld = {
       isNormalUser = true;
-      extraGroups = [ "wheel" "media" "docker" "lxd" ];
+      home = "/mnt/data/homes/arosenfeld";
+      extraGroups = [ "wheel" "users" "media" "docker" "lxd" ];
     };
     camille = {
       uid = 1001;
       isNormalUser = true;
-      extraGroups = [ "media" ];
+      group = "camille";
+      home = "/mnt/data/homes/camille";
+      extraGroups = [ "media" "users" ];
     };
     media = {
       isSystemUser = true;

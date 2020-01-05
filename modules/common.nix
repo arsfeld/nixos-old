@@ -41,6 +41,9 @@ with lib;
     htop 
     iotop 
     lm_sensors 
+    pciutils
+    gptfdisk
+    lshw
     hwloc
     smartmontools
     ntfs3g 
