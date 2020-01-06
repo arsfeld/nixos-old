@@ -11,9 +11,7 @@ with lib;
     extraPools = [ "data" ];
   };
 
-  #services.zfs.autoSnapshot.enable = true;
+  services.zfs.autoSnapshot.enable = true;
   services.zfs.autoScrub.enable = true;
-  #services.zfs.trim.enabled = true;
-
-
+  services.zfs.trim.enable = true;
 }
