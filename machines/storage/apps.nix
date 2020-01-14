@@ -26,8 +26,8 @@ with lib;
   systemd.services.nas = {
     description = "Docker based NAS applications";
     wantedBy = [ "multi-user.target" ];
-    after = [ "docker.service" "docker.socket" ];
-    requires = [ "docker.service" "docker.socket" ];
+    after = [ "docker.service" "docker.socket" "zfs-mount.service" ];
+    requires = [ "docker.service" "docker.socket" "zfs-mount.service" ];
     script = "${pkgs.docker-compose}/bin/docker-compose up";
     #preStop = "${pkgs.docker}/bin/docker stop prometheus";
     #reload = "${pkgs.docker}/bin/docker restart prometheus";

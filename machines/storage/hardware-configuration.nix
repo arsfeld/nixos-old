@@ -23,7 +23,6 @@
       fsType = "zfs";
     };
 
-
   fileSystems."/var/nas" =
     { device = "rpool/nas";
       fsType = "zfs";

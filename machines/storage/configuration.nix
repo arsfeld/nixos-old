@@ -9,6 +9,7 @@
       ./apps.nix
       ./samba.nix
       ./users.nix
+      ./backup.nix
     ];
 
   zramSwap.algorithm = "zstd";
