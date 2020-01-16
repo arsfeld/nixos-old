@@ -45,6 +45,7 @@ with lib;
     gptfdisk
     lshw
     hwloc
+    mbuffer
     smartmontools
     ntfs3g 
   ];
