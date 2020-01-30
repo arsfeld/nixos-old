@@ -6,7 +6,7 @@ with lib;
 {
 
   services.restic.backups = {
-      localbackup = {
+      homeb2 = {
         paths = [ "/mnt/data/homes" "/var/lib/plex" "/var/nas" ];
         repository = "b2:arosenfeld-backup:backups";
         passwordFile = "/etc/secrets/restic";

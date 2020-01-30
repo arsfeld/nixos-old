@@ -6,6 +6,8 @@ with lib;
 {
   virtualisation.lxd.enable = true;
   virtualisation.docker.enable = true;
+  virtualisation.docker.storageDriver = "zfs";
+  virtualisation.docker.autoPrune.enable = true;
 
   services.openssh.enable = true;
   
@@ -29,12 +31,11 @@ with lib;
     after = [ "docker.service" "docker.socket" "zfs-mount.service" ];
     requires = [ "docker.service" "docker.socket" "zfs-mount.service" ];
     script = "${pkgs.docker-compose}/bin/docker-compose up";
-    #preStop = "${pkgs.docker}/bin/docker stop prometheus";
-    #reload = "${pkgs.docker}/bin/docker restart prometheus";
     serviceConfig = {
       ExecStartPre = [
       	"-${pkgs.docker-compose}/bin/docker-compose down -v"
         "-${pkgs.docker-compose}/bin/docker-compose rm -fv"
+        "-${pkgs.docker} network create proxy"
       ];
       ExecStop = "${pkgs.docker-compose}/bin/docker-compose down -v";
       TimeoutStartSec = 0;
@@ -42,5 +43,39 @@ with lib;
       Restart = "always";
       WorkingDirectory = "/etc/nas";
     };
+  };
+
+  containers.pihole =
+  { 
+    autoStart = true;
+    privateNetwork = true;
+    config =
+      { config, pkgs, ... }:
+      { 
+        docker-containers.pi-hole = {
+          image = "pihole/pihole:latest";
+          ports = [
+              "53:53/tcp"
+              "53:53/udp"
+              "67:67/udp"
+              "80:80/tcp"
+              "443:443/tcp"
+          ];
+
+          environment = {
+            "TZ" = "America/Toronto";
+          };
+
+          volumes = [
+            "/var/pi-hole/etc-pihole:/etc/pihole/"
+            "/var/pi-hole/etc-dnsmasq.d:/etc/dnsmasq.d/"
+          ];
+
+          extraDockerOptions = [
+            "--dns=127.0.0.1"
+            "--dns=1.1.1.1"
+          ];
+        };
+      };
   };
 }

@@ -18,15 +18,21 @@ with lib;
 
   services.znapzend = {
     enable = true;
+    pure = true;
     
     zetup = {
-      "data/backups" = {
+      "data/homes" = {
         # Make snapshots of tank/home every hour, keep those for 1 day,
         # keep every days snapshot for 1 month, etc.
         plan = "1d=>1h,1m=>1d,1y=>1m";
-        recursive = true;
+        recursive = false;
+        mbuffer = {
+          enable = true;
+          port = 17777;
+        };
         destinations.local = {
-          dataset = "backup/data/backups";
+          presend = "zpool import -Nf backup";
+          dataset = "backup/data/homes";
         };
       };
     };
