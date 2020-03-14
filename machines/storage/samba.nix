@@ -38,23 +38,17 @@ with lib;
         browseable = "yes";
       };
 
+      Camera = {
+        path = "/mnt/data/camera"; 
+        browseable = "yes";
+        public = "yes";
+      };
+
       homes = {
         "follow symlinks" = "yes";
         "wide links" = "yes";
         browseable = "yes";
       };
-
-      users = {
-        path = "/mnt/data/homes";
-        "read only" = "no";
-        "force create mode" = "0600";
-        "force directory mode" = "0700";
-      };
-
-      #Camera = {
-      #  path = "/mnt/data/camera";
-      #  
-      #}
     };
   };
 

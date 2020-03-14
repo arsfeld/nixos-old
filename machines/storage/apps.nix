@@ -45,6 +45,15 @@ with lib;
     };
   };
 
+# sudo docker run -it --name bit --net=container:vpn -d dperson/transmission
+# sudo docker run -it --name web -p 80:80 -p 443:443 --link vpn:bit \
+#             -d dperson/nginx -w "http://bit:9091/transmission;/transmission"
+
+  # docker-containers.transmission = {
+  #   image = "dperson/transmission";
+  # };
+
+
   containers.pihole =
   { 
     autoStart = true;

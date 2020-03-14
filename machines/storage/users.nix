@@ -7,12 +7,14 @@ with lib;
   users.users = {
     arosenfeld = {
       isNormalUser = true;
+      description = "Alexandre Rosenfeld";
       home = "/mnt/data/homes/arosenfeld";
       extraGroups = [ "wheel" "users" "media" "docker" "lxd" ];
     };
     camille = {
       uid = 1001;
       isNormalUser = true;
+      description = "Camille Paradis-Gaudet";
       group = "camille";
       home = "/mnt/data/homes/camille";
       extraGroups = [ "media" "users" ];
@@ -21,6 +23,9 @@ with lib;
       isSystemUser = true;
       uid = 8675309;
       group = "media";
+    };
+    camera = {
+      uid = 922;
     };
   };
 

@@ -23,6 +23,7 @@
   networking.interfaces.eno1.useDHCP = true;
   networking.firewall.enable = false;
   networking.hostId = "d5325dbe";
+  networking.wireguard.enable = true;
 
   services.fail2ban.enable = true;
 
