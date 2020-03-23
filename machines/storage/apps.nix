@@ -3,6 +3,9 @@
 
 with lib;
 
+let
+  unstable = import <nixos-unstable> { config = { allowUnfree = true; }; };
+in
 {
   virtualisation.lxd.enable = true;
   virtualisation.docker.enable = true;
@@ -23,6 +26,7 @@ with lib;
     openFirewall = true;
     user = "media";
     group = "media";
+    package = unstable.plex;
   };
 
   systemd.services.nas = {
@@ -43,48 +47,5 @@ with lib;
       Restart = "always";
       WorkingDirectory = "/etc/nas";
     };
-  };
-
-# sudo docker run -it --name bit --net=container:vpn -d dperson/transmission
-# sudo docker run -it --name web -p 80:80 -p 443:443 --link vpn:bit \
-#             -d dperson/nginx -w "http://bit:9091/transmission;/transmission"
-
-  # docker-containers.transmission = {
-  #   image = "dperson/transmission";
-  # };
-
-
-  containers.pihole =
-  { 
-    autoStart = true;
-    privateNetwork = true;
-    config =
-      { config, pkgs, ... }:
-      { 
-        docker-containers.pi-hole = {
-          image = "pihole/pihole:latest";
-          ports = [
-              "53:53/tcp"
-              "53:53/udp"
-              "67:67/udp"
-              "80:80/tcp"
-              "443:443/tcp"
-          ];
-
-          environment = {
-            "TZ" = "America/Toronto";
-          };
-
-          volumes = [
-            "/var/pi-hole/etc-pihole:/etc/pihole/"
-            "/var/pi-hole/etc-dnsmasq.d:/etc/dnsmasq.d/"
-          ];
-
-          extraDockerOptions = [
-            "--dns=127.0.0.1"
-            "--dns=1.1.1.1"
-          ];
-        };
-      };
   };
 }
