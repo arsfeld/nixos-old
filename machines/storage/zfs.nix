@@ -17,7 +17,7 @@ with lib;
   services.zfs.trim.enable = true;
 
   services.znapzend = {
-    enable = true;
+    enable = false;
     pure = true;
     
     zetup = {

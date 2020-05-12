@@ -22,13 +22,33 @@ with lib;
   };
 
   systemd = {
+
+    timers.nas-backup = {
+      wantedBy = [ "timers.target" ];
+      partOf = [ "nas-backup.service" ];
+      timerConfig.OnCalendar = "daily";
+    };
+    services.nas-backup = {
+      serviceConfig.Type = "oneshot";
+      script = ''
+        TIME=$(date -Iseconds)
+        for d in /var/nas/*
+        do
+          SERVICE=$(basename $d)
+          BACKUP_FOLDER=/mnt/data/backups/nas/$SERVICE
+          mkdir -p $BACKUP_FOLDER 
+          tar --zstd -cf $BACKUP_FOLDER/$SERVICE-$TIME.tar.zstd $d 
+        done
+      '';
+    };
+
     timers.rclone-sync = {
       wantedBy = [ "timers.target" ];
       partOf = [ "rclone-sync.service" ];
       timerConfig.OnCalendar = "daily";
     };
     services.rclone-sync = let 
-        rcloneOptions = "--fast-list -P --stats-one-line";
+        rcloneOptions = "--fast-list --stats-one-line";
     in {
       serviceConfig.Type = "oneshot";
       serviceConfig.User = "arosenfeld";

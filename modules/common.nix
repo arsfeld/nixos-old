@@ -48,5 +48,6 @@ with lib;
     mbuffer
     smartmontools
     ntfs3g 
+    zstd
   ];
 }

@@ -18,6 +18,9 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
+  system.autoUpgrade.enable = true;
+  system.autoUpgrade.allowReboot = true;
+
   networking.hostName = "storage"; # Define your hostname.
   networking.useDHCP = false;
   networking.interfaces.eno1.useDHCP = true;
