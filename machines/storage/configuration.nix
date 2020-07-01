@@ -14,9 +14,11 @@
 
   zramSwap.algorithm = "zstd";
 
-  # Use the systemd-boot EFI boot loader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+  boot = {
+    kernel.sysctl = {
+      "fs.inotify.max_user_watches" = "1048576";
+    };
+  };
 
   system.autoUpgrade.enable = true;
   system.autoUpgrade.allowReboot = true;

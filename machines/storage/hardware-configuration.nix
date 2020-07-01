@@ -8,6 +8,34 @@
     [ <nixpkgs/nixos/modules/installer/scan/not-detected.nix>
     ];
 
+
+  boot.loader.systemd-boot = {
+    enable = true;
+  };
+  boot.loader.efi = {
+    canTouchEfiVariables = true;
+  };
+/*
+boot.loader.grub = {
+  enable = true;
+  copyKernels = true;
+  efiInstallAsRemovable = true;
+  efiSupport = true;
+  fsIdentifier = "uuid";
+  splashMode = "stretch";
+  version = 2;
+  device = "nodev";
+  extraEntries = ''
+    menuentry "Reboot" {
+      reboot
+    }
+    menuentry "Poweroff" {
+      halt
+    }
+  '';
+};
+*/
+
   boot.initrd.availableKernelModules = [ "xhci_pci" "ehci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-intel" ];
@@ -35,9 +63,9 @@
 
 
   fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/BE45-E59F";
+    { device = "/dev/disk/by-uuid/FA8A-2D3D";
       fsType = "vfat";
-    };
+   };
 
   swapDevices = [ ];
 
