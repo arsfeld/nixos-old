@@ -6,6 +6,7 @@ with lib;
 {
   users.users = {
     arosenfeld = {
+      shell = pkgs.zsh;
       isNormalUser = true;
       description = "Alexandre Rosenfeld";
       home = "/mnt/data/homes/arosenfeld";

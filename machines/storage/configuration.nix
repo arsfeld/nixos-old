@@ -7,6 +7,7 @@
       ./hardware-configuration.nix
       ./zfs.nix
       ./apps.nix
+      ./nas.nix
       ./samba.nix
       ./users.nix
       ./backup.nix
@@ -21,7 +22,7 @@
   };
 
   system.autoUpgrade.enable = true;
-  system.autoUpgrade.allowReboot = true;
+  #system.autoUpgrade.allowReboot = true;
 
   networking.hostName = "storage"; # Define your hostname.
   networking.useDHCP = false;

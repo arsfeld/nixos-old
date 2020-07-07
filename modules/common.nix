@@ -28,6 +28,7 @@ with lib;
   hardware.cpu.intel.updateMicrocode = true;
 
   environment.systemPackages = with pkgs; [
+    gcc
     git
     wget 
     vim

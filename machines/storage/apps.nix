@@ -12,6 +12,8 @@ in
   virtualisation.docker.storageDriver = "zfs";
   virtualisation.docker.autoPrune.enable = true;
 
+  programs.gnupg.agent.enable = true;
+
   services.clamav.daemon.enable = true;
   services.clamav.updater.enable = true;
 
@@ -30,25 +32,5 @@ in
     user = "media";
     group = "media";
     package = unstable.plex;
-  };
-
-  systemd.services.nas = {
-    description = "Docker based NAS applications";
-    wantedBy = [ "multi-user.target" ];
-    after = [ "docker.service" "docker.socket" "zfs-mount.service" ];
-    requires = [ "docker.service" "docker.socket" "zfs-mount.service" ];
-    script = "${pkgs.docker-compose}/bin/docker-compose up";
-    serviceConfig = {
-      ExecStartPre = [
-      	"-${pkgs.docker-compose}/bin/docker-compose down -v"
-        "-${pkgs.docker-compose}/bin/docker-compose rm -fv"
-        "-${pkgs.docker} network create proxy"
-      ];
-      ExecStop = "${pkgs.docker-compose}/bin/docker-compose down -v";
-      TimeoutStartSec = 0;
-      TimeoutStopSec = 120;
-      Restart = "always";
-      WorkingDirectory = "/etc/nas";
-    };
   };
 }
