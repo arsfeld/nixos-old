@@ -223,4 +223,33 @@ in
             "ZONE" = secrets.domain;
         };
     };
+
+
+    docker-containers."pihole" = {
+        image = "pihole/pihole:latest";
+        environment = {
+            "TZ" = tz;
+            "VIRTUAL_HOST" = "pihole.${secrets.domain}";
+            "WEBPASSWORD" = secrets.pihole.password;
+        };
+        ports = [
+            "${secrets.pihole.ipAddress}:53:53/tcp"
+            "${secrets.pihole.ipAddress}:53:53/udp"
+            #"192.168.1.10:67:67/udp"
+            #"80:80/tcp"
+            #"443:443/tcp"
+        ];
+        volumes = [ 
+            "${configDir}/pihole/etc:/etc/pihole"
+            "${configDir}/pihole/dnsmasq:/etc/dnsmasq.d"
+        ];
+        extraDockerOptions = [ 
+            "-l" "caddy=pihole.${secrets.domain}"
+            "-l" "caddy.reverse_proxy={{upstreams http 80}}"
+            "--dns" "1.1.1.1"
+            "--dns" "127.0.0.1" 
+            "--cap-add=NET_ADMIN" 
+            "--network=${networkName}"
+        ];
+    };
 }

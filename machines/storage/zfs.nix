@@ -11,10 +11,22 @@ with lib;
     extraPools = [ "data" ];
   };
 
-  services.zfs.autoSnapshot.enable = true;
+  #services.zfs.autoSnapshot.enable = true;
   services.zfs.autoScrub.enable = true;
   #services.zfs.autoScrub.interval = "Wed *-1 02:00:00";
   services.zfs.trim.enable = true;
+
+  services.sanoid = {
+    enable = true;
+
+    datasets = {
+      "data/homes" = {
+        yearly = 5;
+        monthly = 24;
+      };
+      "data/files" = {};
+    };
+  };
 
   services.znapzend = {
     enable = false;

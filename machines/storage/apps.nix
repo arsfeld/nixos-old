@@ -14,9 +14,6 @@ in
 
   programs.gnupg.agent.enable = true;
 
-  services.clamav.daemon.enable = true;
-  services.clamav.updater.enable = true;
-
   services.openssh.enable = true;
   
   services.netdata.enable = true;

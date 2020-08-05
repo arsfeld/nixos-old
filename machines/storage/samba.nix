@@ -21,6 +21,14 @@ with lib;
       map acl inherit = yes
       allow insecure wide links = yes
       writable = yes
+      vfs objects = shadow_copy2
+      
+      shadow: snapdir = .zfs/snapshot
+      shadow: sort = desc
+      shadow: format = _%Y-%m-%d_%H:%M:%S_
+      shadow: snapprefix = ^autosnap
+      shadow: delimiter = _
+      shadow:localtime = yes
     '';
     shares = {
       Files = {

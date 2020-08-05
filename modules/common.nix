@@ -27,6 +27,8 @@ with lib;
   #hardware.cpu.amd.updateMicrocode = true;
   hardware.cpu.intel.updateMicrocode = true;
 
+  services.openssh.forwardX11 = true;
+
   environment.systemPackages = with pkgs; [
     gcc
     git

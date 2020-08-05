@@ -8,33 +8,30 @@
     [ <nixpkgs/nixos/modules/installer/scan/not-detected.nix>
     ];
 
-
-  boot.loader.systemd-boot = {
+  boot.loader.grub = {
     enable = true;
+    efiSupport = true;
+    copyKernels = true;
+    zfsSupport = true;
+    mirroredBoots = [
+      { 
+        devices = [ "nodev" ]; 
+        path = "/boot1"; 
+      }
+      # { 
+      #   devices = [ "/dev/disk/by-id/ata-LITEONIT_LCS-128M6S_2.5_7mm_128GB_TW032GYJ5508543G2315" ]; 
+      #   path = "/boot2"; 
+      # };
+    ];
   };
+
+  # boot.loader.systemd-boot = {
+  #   enable = true;
+  # };
+
   boot.loader.efi = {
     canTouchEfiVariables = true;
   };
-/*
-boot.loader.grub = {
-  enable = true;
-  copyKernels = true;
-  efiInstallAsRemovable = true;
-  efiSupport = true;
-  fsIdentifier = "uuid";
-  splashMode = "stretch";
-  version = 2;
-  device = "nodev";
-  extraEntries = ''
-    menuentry "Reboot" {
-      reboot
-    }
-    menuentry "Poweroff" {
-      halt
-    }
-  '';
-};
-*/
 
   boot.initrd.availableKernelModules = [ "xhci_pci" "ehci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
   boot.initrd.kernelModules = [ ];
@@ -61,11 +58,15 @@ boot.loader.grub = {
       fsType = "zfs";
     };
 
-
-  fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/FA8A-2D3D";
+  fileSystems."/boot1" = 
+    { device = "/dev/disk/by-uuid/32FA-6BDB";
       fsType = "vfat";
-   };
+    };
+
+  # fileSystems."/boot2" =
+  #   { device = "/dev/disk/by-uuid/FA8A-2D3D";
+  #     fsType = "vfat";
+  #  };
 
   swapDevices = [ ];
 
