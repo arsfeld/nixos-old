@@ -48,32 +48,39 @@ in
         ];
     };
 
-    docker-containers."qbittorrent" = {
-        image = "linuxserver/qbittorrent";
-        environment = {
-            "PUID" = puid;
-            "PGID" = pgid;
-            "TZ" = tz;
-            "UMASK_SET" = "002";
-            "WEBUI_PORT" = "8168";
-        };
-        ports = [
-            "6882:6882"
-            "6882:6882/udp"
-            "8168:8168"
-        ];
-        volumes = [ 
-            "${configDir}/qbittorrent:/config"
-            "${dataDir}/files/Downloads:/downloads"
-            "${dataDir}/files:/files" 
-            "${dataDir}/media:/media" 
-        ];
-        extraDockerOptions = [ 
-            "-l" "caddy=qbittorrent.${secrets.domain}"
-            "-l" "caddy.reverse_proxy={{upstreams http 8168}}"
-            "--network=${networkName}" 
-        ];
-    };
+    # docker-containers."qbittorrent" = {
+    #     enabled = false;
+    #     image = "guillaumedsde/alpine-qbittorrent-openvpn:latest";
+    #     environment = {
+    #         "CREATE_TUN_DEVICE" = "true";
+    #         "OPENVPN_PROVIDER" = secrets.openvpn.provider;
+    #         "OPENVPN_CONFIG" = secrets.openvpn.config;
+    #         "OPENVPN_USERNAME" = secrets.openvpn.username;
+    #         "OPENVPN_PASSWORD" = secrets.openvpn.password;
+    #         "PUID" = puid;
+    #         "PGID" = pgid;
+    #         "TZ" = tz;
+    #         "UMASK_SET" = "002";
+    #         "WEBUI_PORT" = "8168";
+    #         "LAN" = "192.168.0.0/16";
+    #     };
+    #     ports = [
+    #         "8080:8080"
+    #     ];
+    #     volumes = [ 
+    #         "${configDir}/qbittorrent:/config"
+    #         "${dataDir}/files/Downloads:/downloads"
+    #         "${dataDir}/files:/files" 
+    #         "${dataDir}/media:/media" 
+    #     ];
+    #     extraDockerOptions = [ 
+    #         "-l" "caddy=qbittorrent.${secrets.domain}"
+    #         "-l" "caddy.reverse_proxy={{upstreams http 8080}}"
+    #         "--sysctl" "net.ipv6.conf.all.disable_ipv6=0" 
+    #         "--cap-add=NET_ADMIN" 
+    #         "--network=${networkName}" 
+    #     ];
+    # };
 
 
     docker-containers."transmission" = {
@@ -117,6 +124,13 @@ in
             "--sysctl" "net.ipv6.conf.all.disable_ipv6=0" 
             "--cap-add=NET_ADMIN" 
             "--network=${networkName}"
+        ];
+    };
+
+    docker-containers."transmission-rss" = {
+        image = "nning2/transmission-rss";
+        volumes = [
+            "${configDir}/transmission-rss/transmission-rss.conf:/etc/transmission-rss.conf"
         ];
     };
 
@@ -185,6 +199,28 @@ in
             "-l" "caddy=sonarr.${secrets.domain}"
             "-l" "caddy.reverse_proxy={{upstreams http 8989}}"
             "--network=${networkName}" 
+        ];
+    };
+
+    docker-containers."radarr" = {
+        image = "linuxserver/radarr";
+        environment = {
+            "PUID" = puid;
+            "PGID" = pgid;
+            "TZ" = tz;
+        };
+        ports = [
+            "7878:7878"
+        ];
+        volumes = [
+            "${configDir}/radarr:/config"
+            "${dataDir}/media/Downloads:/downloads"
+            "${dataDir}/media:/media"
+        ];
+        extraDockerOptions = [
+            "-l" "caddy=radarr.${secrets.domain}"
+            "-l" "caddy.reverse_proxy={{upstreams http 7878}}"
+            "--network=${networkName}"
         ];
     };
 

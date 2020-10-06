@@ -35,7 +35,8 @@ with lib;
     wget 
     vim
     file 
-    pv 
+    pv
+    libva 
     lsof 
     killall 
     sysstat 
