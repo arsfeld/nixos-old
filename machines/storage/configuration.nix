@@ -24,6 +24,10 @@
   system.autoUpgrade.enable = true;
   #system.autoUpgrade.allowReboot = true;
 
+  services.journald.extraConfig = ''
+    SystemMaxUse=1G
+  '';
+
   networking.hostName = "storage"; # Define your hostname.
   networking.useDHCP = false;
   networking.interfaces.eno1.useDHCP = true;

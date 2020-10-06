@@ -18,10 +18,10 @@
         devices = [ "nodev" ]; 
         path = "/boot1"; 
       }
-      # { 
-      #   devices = [ "/dev/disk/by-id/ata-LITEONIT_LCS-128M6S_2.5_7mm_128GB_TW032GYJ5508543G2315" ]; 
-      #   path = "/boot2"; 
-      # };
+      { 
+        devices = [ "nodev" ]; 
+        path = "/boot2"; 
+      }
     ];
   };
 
@@ -63,10 +63,10 @@
       fsType = "vfat";
     };
 
-  # fileSystems."/boot2" =
-  #   { device = "/dev/disk/by-uuid/FA8A-2D3D";
-  #     fsType = "vfat";
-  #  };
+  fileSystems."/boot2" =
+    { device = "/dev/disk/by-uuid/FA8A-2D3D";
+      fsType = "vfat";
+    };
 
   swapDevices = [ ];
 
