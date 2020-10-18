@@ -48,40 +48,50 @@ in
         ];
     };
 
-    # docker-containers."qbittorrent" = {
-    #     enabled = false;
-    #     image = "guillaumedsde/alpine-qbittorrent-openvpn:latest";
-    #     environment = {
-    #         "CREATE_TUN_DEVICE" = "true";
-    #         "OPENVPN_PROVIDER" = secrets.openvpn.provider;
-    #         "OPENVPN_CONFIG" = secrets.openvpn.config;
-    #         "OPENVPN_USERNAME" = secrets.openvpn.username;
-    #         "OPENVPN_PASSWORD" = secrets.openvpn.password;
-    #         "PUID" = puid;
-    #         "PGID" = pgid;
-    #         "TZ" = tz;
-    #         "UMASK_SET" = "002";
-    #         "WEBUI_PORT" = "8168";
-    #         "LAN" = "192.168.0.0/16";
-    #     };
-    #     ports = [
-    #         "8080:8080"
-    #     ];
-    #     volumes = [ 
-    #         "${configDir}/qbittorrent:/config"
-    #         "${dataDir}/files/Downloads:/downloads"
-    #         "${dataDir}/files:/files" 
-    #         "${dataDir}/media:/media" 
-    #     ];
-    #     extraDockerOptions = [ 
-    #         "-l" "caddy=qbittorrent.${secrets.domain}"
-    #         "-l" "caddy.reverse_proxy={{upstreams http 8080}}"
-    #         "--sysctl" "net.ipv6.conf.all.disable_ipv6=0" 
-    #         "--cap-add=NET_ADMIN" 
-    #         "--network=${networkName}" 
-    #     ];
-    # };
+    docker-containers."qbittorrent" = {
+        image = "linuxserver/qbittorrent";
+        environment = {
+            "PUID" = puid;
+            "PGID" = pgid;
+            "TZ" = tz;
+        };
+        volumes = [ 
+            "${configDir}/qbittorrent:/config"
+            "${dataDir}/files/Downloads:/downloads"
+            "${dataDir}/files:/files" 
+            "${dataDir}/media:/media" 
+        ];
+        extraDockerOptions = [
+            "--net=container:openvpn"
+        ];
+        dependsOn = ["openvpn"];
+    };
 
+    docker-containers."qbittorrent-web" = {
+        image = "dperson/nginx";
+        cmd = ["-w" "http://qbittorrent:8080/;/"];
+        extraDockerOptions = [ 
+            "--link" "openvpn:qbittorrent"
+            "-l" "caddy=qbittorrent.${secrets.domain}"
+            "-l" "caddy.reverse_proxy={{upstreams http 80}}"
+            "--network=${networkName}" 
+        ];
+        dependsOn = ["qbittorrent"];
+    };
+
+    docker-containers."openvpn" = {
+        image = "dperson/openvpn-client";
+        environment = {
+            "VPN" = "${secrets.openvpn.server};${secrets.openvpn.username};${secrets.openvpn.password}";
+        };
+        volumes = [
+            "${configDir}/openvpn:/vpn"
+        ];
+        extraDockerOptions = [
+            "--sysctl" "net.ipv6.conf.all.disable_ipv6=0"
+            "--cap-add=NET_ADMIN" "--device" "/dev/net/tun"
+        ];
+    };
 
     docker-containers."transmission" = {
         image = "haugene/transmission-openvpn";
@@ -131,6 +141,7 @@ in
         image = "nning2/transmission-rss";
         volumes = [
             "${configDir}/transmission-rss/transmission-rss.conf:/etc/transmission-rss.conf"
+            "${configDir}/transmission-rss/seen:/seen"
         ];
     };
 
@@ -155,6 +166,20 @@ in
             "-l" "caddy=syncthing.${secrets.domain}"
             "-l" "caddy.reverse_proxy={{upstreams http 8384}}"
             "--network=${networkName}" 
+        ];
+    };
+
+    docker-containers."filebrowser" = {
+        image = "filebrowser/filebrowser";
+        volumes = [
+            "${configDir}/filebrowser/filebrowser.db:/database.db"
+            "${configDir}/filebrowser/.filebrowser.json:/.filebrowser.json"
+            "${dataDir}:/srv"
+        ];
+        extraDockerOptions = [
+            "-l" "caddy=filebrowser.${secrets.domain}"
+            "-l" "caddy.reverse_proxy={{upstreams http 80}}"
+            "--network=${networkName}"
         ];
     };
 
