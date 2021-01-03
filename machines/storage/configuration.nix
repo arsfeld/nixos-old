@@ -5,7 +5,7 @@
     ../../modules/common.nix
     ./hardware-configuration.nix
     ./zfs.nix
-    ./apps.nix
+    ./services.nix
     ./docker.nix
     ./samba.nix
     ./users.nix
