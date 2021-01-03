@@ -1,4 +1,3 @@
-
 { config, pkgs, lib, ... }:
 
 with lib;
@@ -22,7 +21,7 @@ with lib;
       allow insecure wide links = yes
       writable = yes
       vfs objects = shadow_copy2
-      
+
       shadow: snapdir = .zfs/snapshot
       shadow: sort = desc
       shadow: format = _%Y-%m-%d_%H:%M:%S_
@@ -38,16 +37,16 @@ with lib;
 
       Media = {
         path = "/mnt/data/media";
-        browseable = "yes"; 
+        browseable = "yes";
       };
 
       Backups = {
-        path = "/mnt/data/backups"; 
+        path = "/mnt/data/backups";
         browseable = "yes";
       };
 
       Camera = {
-        path = "/mnt/data/camera"; 
+        path = "/mnt/data/camera";
         browseable = "yes";
         public = "yes";
       };

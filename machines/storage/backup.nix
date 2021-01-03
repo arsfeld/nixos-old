@@ -4,6 +4,28 @@
 with lib;
 
 {
+  services.borgbackup.jobs = {
+    # storage = {
+    #   paths = [ "/var/nas" "/var/lib/plex" "/mnt/data/homes" ];
+    #   environment.BORG_RSH = "ssh -i /root/.ssh/id_ed25519 -o StrictHostKeyChecking=no";
+    #   encryption.passphrase = "ftQoF3LSr9aD7b";
+    #   encryption.mode = "repokey-blake2";
+    #   repo = "storage.arsfeld.ca:repo";
+    #   # repo = "/mnt/backup/repo";
+    #   extraArgs = "--progress";
+    #   compression = "auto,zstd";
+    #   startAt = [ ]; # "daily";
+    # };
+
+    #data = {
+    #  paths = [ "/mnt/data/files" "/mnt/data/homes" "/var/nas" "/var/lib/plex" ];
+    #  repo = "/mnt/backup/borg";
+    #  encryption.mode = "none";
+    #  extraArgs = "--progress";
+    #  compression = "auto,zstd";
+    #  startAt = "weekly";
+    #};
+  };
 
   services.restic.backups = {
       nas = {
@@ -36,7 +58,7 @@ with lib;
       timerConfig.OnCalendar = "daily";
     };
     services.rclone-sync = let 
-        rcloneOptions = "--fast-list --stats-one-line";
+        rcloneOptions = "--fast-list --stats-one-line --verbose";
     in {
       serviceConfig.Type = "oneshot";
       serviceConfig.User = "arosenfeld";
@@ -44,6 +66,7 @@ with lib;
         ${pkgs.rclone}/bin/rclone sync ${rcloneOptions} dropbox: ~/Dropbox
         ${pkgs.rclone}/bin/rclone sync ${rcloneOptions} gdrive: ~/Google\ Drive
         ${pkgs.rclone}/bin/rclone sync ${rcloneOptions} onedrive: ~/One\ Drive
+        ${pkgs.rclone}/bin/rclone sync ${rcloneOptions} box: ~/Box
       '';
     };
   };

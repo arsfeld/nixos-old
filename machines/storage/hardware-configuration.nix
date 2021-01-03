@@ -9,7 +9,7 @@
     ];
 
   boot.loader.grub = {
-    enable = true;
+    enable = false;
     efiSupport = true;
     copyKernels = true;
     zfsSupport = true;
@@ -25,14 +25,15 @@
     ];
   };
 
-  # boot.loader.systemd-boot = {
-  #   enable = true;
-  # };
+  boot.loader.systemd-boot = {
+    enable = true;
+  };
 
   boot.loader.efi = {
     canTouchEfiVariables = true;
   };
 
+  boot.kernelParams = [ "libata.force=noncq" ];
   boot.initrd.availableKernelModules = [ "xhci_pci" "ehci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-intel" ];
@@ -58,12 +59,7 @@
       fsType = "zfs";
     };
 
-  fileSystems."/boot1" = 
-    { device = "/dev/disk/by-uuid/32FA-6BDB";
-      fsType = "vfat";
-    };
-
-  fileSystems."/boot2" =
+  fileSystems."/boot" =
     { device = "/dev/disk/by-uuid/FA8A-2D3D";
       fsType = "vfat";
     };

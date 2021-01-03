@@ -1,28 +1,23 @@
 { config, pkgs, ... }:
 
 {
-  imports =
-    [ 
-      ../../modules/common.nix
-      ./hardware-configuration.nix
-      ./zfs.nix
-      ./apps.nix
-      ./nas.nix
-      ./samba.nix
-      ./users.nix
-      ./backup.nix
-    ];
+  imports = [
+    ../../modules/common.nix
+    ./hardware-configuration.nix
+    ./zfs.nix
+    ./apps.nix
+    ./docker.nix
+    ./samba.nix
+    ./users.nix
+    ./backup.nix
+  ];
 
   zramSwap.algorithm = "zstd";
 
-  boot = {
-    kernel.sysctl = {
-      "fs.inotify.max_user_watches" = "1048576";
-    };
-  };
+  boot = { kernel.sysctl = { "fs.inotify.max_user_watches" = "1048576"; }; };
 
   system.autoUpgrade.enable = true;
-  #system.autoUpgrade.allowReboot = true;
+  system.autoUpgrade.allowReboot = false;
 
   services.journald.extraConfig = ''
     SystemMaxUse=1G
@@ -33,7 +28,7 @@
   networking.interfaces.eno1.useDHCP = true;
   networking.firewall.enable = false;
   networking.hostId = "d5325dbe";
-  networking.wireguard.enable = true;
+  networking.wireguard.enable = false;
 
   services.fail2ban.enable = true;
 
@@ -46,6 +41,9 @@
   };
 
   programs.command-not-found.enable = true;
+
+  nix.gc.automatic = true;
+  nix.gc.dates = "03:15";
 
   # This value determines the NixOS release with which your system is to be
   # compatible, in order to avoid breaking some software such as database

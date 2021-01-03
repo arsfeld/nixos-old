@@ -1,4 +1,3 @@
-
 { config, pkgs, lib, ... }:
 
 with lib;
@@ -11,7 +10,8 @@ with lib;
   users.mutableUsers = true;
 
   users.extraUsers.root.openssh.authorizedKeys.keys =
-     with import ../ssh-keys.nix; [ arosenfeld ];
+    with import ../ssh-keys.nix;
+    [ arosenfeld ];
 
   #nix.useSandbox = true;
   #nix.buildCores = 0;
@@ -32,26 +32,26 @@ with lib;
   environment.systemPackages = with pkgs; [
     gcc
     git
-    wget 
+    wget
     vim
-    file 
+    file
     pv
-    libva 
-    lsof 
-    killall 
-    sysstat 
-    hdparm 
+    libva
+    lsof
+    killall
+    sysstat
+    hdparm
     sdparm
-    htop 
-    iotop 
-    lm_sensors 
+    htop
+    iotop
+    lm_sensors
     pciutils
     gptfdisk
     lshw
     hwloc
     mbuffer
     smartmontools
-    ntfs3g 
+    ntfs3g
     zstd
   ];
 }
