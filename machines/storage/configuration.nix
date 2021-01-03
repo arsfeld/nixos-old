@@ -26,11 +26,16 @@
   networking.hostName = "storage"; # Define your hostname.
   networking.useDHCP = false;
   networking.interfaces.eno1.useDHCP = true;
-  networking.firewall.enable = false;
+  # networking.firewall.enable = false;
   networking.hostId = "d5325dbe";
   networking.wireguard.enable = false;
 
   services.fail2ban.enable = true;
+
+  networking.firewall = {
+    allowedTCPPorts = [ 80 443 22000 32400 3005 8324 32469 ]; 
+    allowedUDPPorts = [ 21027 1900 5353 32410 32412 32413 32414 ];
+  };
 
   programs.zsh.enable = true;
 
@@ -42,8 +47,11 @@
 
   programs.command-not-found.enable = true;
 
-  nix.gc.automatic = true;
-  nix.gc.dates = "03:15";
+  nix.gc = {
+     automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 30d";
+  };
 
   # This value determines the NixOS release with which your system is to be
   # compatible, in order to avoid breaking some software such as database
